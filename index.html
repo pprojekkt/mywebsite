@@ -270,17 +270,6 @@
   </div>
   <div class="visit-counter" id="visitCounter"></div>
   <div class="digital-clock-gadget" id="digitalClock"></div>
-  <!-- Emulator -->
-  <div class="emulator-window" id="emuWindow">
-  <div class="emu-titlebar">SEGA Mega Drive</div>
-  <div class="emulator-area">
-    <canvas id="jgenesis-canvas" width="320" height="224" tabindex="0"></canvas>
-  </div>
-  <input type="file" id="romLoader" accept=".bin,.md,.gen,.smd" />
-  <div class="emu-keybinds">
-    Keys: [Z]=A [X]=B [C]=C [S]=Start [D]=Mode [Arrows]=Dpad
-  </div>
-</div>
   <div class="branding">rapture®</div>
   <script>
     // Visit counter
@@ -415,45 +404,110 @@
     });
     updateProgress();
 </script>
-<script src="jgenesis.bundle.js"></script> <!-- Place this before your integration code -->
 
+<!-- Wolfenstein 3D Mini Demo (Raycaster) -->
+<div class="emulator-window" id="wolf3dWindow">
+  <div class="emu-titlebar">Raycaster</div>
+  <div class="emulator-area">
+    <canvas id="wolf-canvas" width="320" height="224" tabindex="0"
+      style="outline:none; background: #101415; width:100%; height:100%;"></canvas>
+  </div>
+  <div class="emu-keybinds">
+    Controls: [←][→]=Turn [↑]=Forward [↓]=Back [Space]=Sprint
+  </div>
+</div>
 <script>
-// ---- Genesis Emulator [JGenesis] integration ----
-let jgenesisEmu = null;
-const jgenesisCanvas = document.getElementById('jgenesis-canvas');
-const romLoader = document.getElementById('romLoader');
+// ---- Wolfenstein 3D Raycaster Mini Demo ----
+// Author: Community/CC0. Improved coloring, WASD alternative.
+const map = [
+  [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+  [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+  [1,0,0,0,0,0,0,0,1,1,0,0,0,0,0,1],
+  [1,0,0,1,1,1,0,0,1,1,0,0,1,0,0,1],
+  [1,0,0,1,0,1,0,0,0,0,1,0,1,0,0,1],
+  [1,0,0,1,0,1,1,1,1,0,1,0,1,0,0,1],
+  [1,0,0,0,0,0,0,0,1,0,0,0,1,0,0,1],
+  [1,0,1,1,1,1,1,0,1,1,1,1,1,0,0,1],
+  [1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1],
+  [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+];
+const mapW = map[0].length, mapH = map.length;
 
-romLoader.addEventListener('change', async function() {
-  if (this.files && this.files[0]) {
-    const file = this.files[0];
-    const arrayBuffer = await file.arrayBuffer();
+const canvas = document.getElementById('wolf-canvas'), ctx = canvas.getContext('2d');
+let posX=2.5, posY=2.5, dirA=Math.PI/4, moveSpeed=.066, rotSpeed=0.045;
+const keys = {};
+let lastT = 0;
 
-    // JGenesis expects ROMs as Uint8Array
-    const romData = new Uint8Array(arrayBuffer);
+function castRay(x) {
+  const fov = Math.PI/3; // 60deg fov
+  const rayA = dirA + (x/canvas.width-0.5)*fov;
+  let sinA = Math.sin(rayA), cosA = Math.cos(rayA);
 
-    // If emulator already exists, reset before reloading
-    if (jgenesisEmu) {
-      jgenesisEmu.stop();
-    }
-
-    // Create emulator instance
-    jgenesisEmu = await JGenesis.create({
-      canvas: jgenesisCanvas,
-      audio: true, // set false for silent
-      // You can pass callbacks, saveRAM, settings, etc., if needed
-    });
-
-    // Load ROM and start
-    jgenesisEmu.loadROM(romData);
-    jgenesisEmu.run();
-
-    // Canvas focus for keyboard controls
-    jgenesisCanvas.focus();
+  let dist = 0, hit=0;
+  while (!hit && dist < 20) {
+    dist += 0.02;
+    let xp = posX + cosA*dist, yp = posY + sinA*dist;
+    let mapX = xp|0, mapY = yp|0;
+    if(mapX<0||mapX>=mapW||mapY<0||mapY>=mapH) break;
+    hit = map[mapY][mapX];
   }
-});
+  return {dist, shade: hit};
+}
 
-// Keyboard focus on click/tap
-jgenesisCanvas.addEventListener("click", function() { this.focus(); });
+function render() {
+  // Draw ceiling and floor
+  ctx.fillStyle="#202026"; ctx.fillRect(0,0,canvas.width,canvas.height/2);
+  ctx.fillStyle="#222C20"; ctx.fillRect(0,canvas.height/2,canvas.width,canvas.height/2);
+  // Columns
+  for(let x=0; x<canvas.width; x++) {
+    const {dist, shade} = castRay(x);
+    if (shade) {
+      // Simple distance shading and color variant for walls
+      let wallH = Math.min(canvas.height, 190/(dist+0.1));
+      let c = 255-Math.min(150,dist*36)|0;
+      ctx.fillStyle = `rgb(${c},${c},${c-30})`;
+      ctx.fillRect(x,(canvas.height-wallH)/2,1,wallH);
+      // Fake vertical stripes for style
+      if (x&8) ctx.fillStyle = `rgba(80,255,180,0.16)`, ctx.fillRect(x,(canvas.height-wallH)/2,1,wallH);
+    }
+  }
+}
+
+// Handle keys: arrows/WASD
+document.addEventListener('keydown',e=>{
+  keys[e.code]=true; 
+  if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight","KeyW","KeyS","KeyA","KeyD","Space"].includes(e.code))
+    e.preventDefault();
+});
+document.addEventListener('keyup',e=>{keys[e.code]=false;});
+
+function update(dt) {
+  let ms = moveSpeed * (keys["Space"]?2:1);
+  if(keys["ArrowLeft"]||keys["KeyA"]) dirA -= rotSpeed*dt;
+  if(keys["ArrowRight"]||keys["KeyD"]) dirA += rotSpeed*dt;
+  let dx = Math.cos(dirA), dy=Math.sin(dirA);
+  if(keys["ArrowUp"]||keys["KeyW"]) {
+    let nx=posX+dx*ms*dt, ny=posY+dy*ms*dt;
+    if(!map[ny|0][posX|0]) posY=ny;
+    if(!map[posY|0][nx|0]) posX=nx;
+  }
+  if(keys["ArrowDown"]||keys["KeyS"]) {
+    let nx=posX-dx*ms*dt, ny=posY-dy*ms*dt;
+    if(!map[ny|0][posX|0]) posY=ny;
+    if(!map[posY|0][nx|0]) posX=nx;
+  }
+}
+
+function gameLoop(ts) {
+  let dt = Math.min(2, (lastT ? (ts - lastT)/16 : 1));
+  lastT = ts;
+  update(dt);
+  render();
+  requestAnimationFrame(gameLoop);
+}
+canvas.focus();
+canvas.addEventListener("click",()=>canvas.focus());
+gameLoop();
 </script>
 </body>
 </html>
