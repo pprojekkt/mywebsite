@@ -1,7 +1,4 @@
 /* @ts-self-types="./jgenesis_web.d.ts" */
-import { loadBios, loadSaveFiles, writeBios, writeSaveFile } from './snippets/jgenesis-web-84ddb6bbedfb3632/js/idb.js';
-import { afterInputConfigure, localStorageGet, localStorageSet, setCursorVisible, setFullscreen, setRomTitle, setSaveUiEnabled, showGbaConfig, showGenesisConfig, showSmsGgConfig, showSnesConfig } from './snippets/jgenesis-web-84ddb6bbedfb3632/js/ui.js';
-
 export class AudioProcessor {
     __destroy_into_raw() {
         const ptr = this.__wbg_ptr;
