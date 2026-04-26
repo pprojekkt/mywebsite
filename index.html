@@ -270,19 +270,18 @@
   </div>
   <div class="visit-counter" id="visitCounter"></div>
   <div class="digital-clock-gadget" id="digitalClock"></div>
-  <!-- Emulator (jsMD - in-page, no iframe) -->
+  <!-- Emulator -->
   <div class="emulator-window" id="emuWindow">
-    <div class="emu-titlebar">SEGA Mega Drive</div>
-    <div class="emulator-area">
-      <canvas id="mdscreen" width="320" height="224" tabindex="0"></canvas>
-    </div>
-    <input type="file" id="romLoader" accept=".bin,.md,.gen,.smd" />
-    <div class="emu-keybinds">
-      Keys: [Z]=A [X]=B [C]=C [S]=Start [D]=Mode [Arrows]=Dpad
-    </div>
+  <div class="emu-titlebar">SEGA Mega Drive</div>
+  <div class="emulator-area">
+    <canvas id="jgenesis-canvas" width="320" height="224" tabindex="0"></canvas>
   </div>
+  <input type="file" id="romLoader" accept=".bin,.md,.gen,.smd" />
+  <div class="emu-keybinds">
+    Keys: [Z]=A [X]=B [C]=C [S]=Start [D]=Mode [Arrows]=Dpad
+  </div>
+</div>
   <div class="branding">rapture®</div>
-  <script src="https://cdn.jsdelivr.net/gh/stromar/jsg/dist/md.js"></script>
   <script>
     // Visit counter
     let vc = localStorage.getItem('pprojekkt_visits');
@@ -415,30 +414,46 @@
       if (!isNaN(audio.duration)) audio.currentTime = pct*audio.duration;
     });
     updateProgress();
-    // ---- Genesis Emulator [jsMD] integration ----
-    let gen = null;
-    let romBuf = null;
-    let mdscreen = document.getElementById('mdscreen');
-    let romLoader = document.getElementById('romLoader');
-    // init on first ROM load
-    romLoader.addEventListener('change', function() {
-      if(this.files && this.files[0]) {
-        let f = this.files[0];
-        let reader = new FileReader();
-        reader.onload = function(e) {
-          romBuf = new Uint8Array(e.target.result);
-          if(!gen) {
-            gen = new MD({canvas:mdscreen});
-          }
-          gen.loadROM(romBuf);
-          gen.run();
-          mdscreen.focus();
-        }
-        reader.readAsArrayBuffer(f);
-      }
+</script>
+<script src="jgenesis.bundle.js"></script> <!-- Place this before your integration code -->
+
+<script>
+// ---- Genesis Emulator [JGenesis] integration ----
+let jgenesisEmu = null;
+const jgenesisCanvas = document.getElementById('jgenesis-canvas');
+const romLoader = document.getElementById('romLoader');
+
+romLoader.addEventListener('change', async function() {
+  if (this.files && this.files[0]) {
+    const file = this.files[0];
+    const arrayBuffer = await file.arrayBuffer();
+
+    // JGenesis expects ROMs as Uint8Array
+    const romData = new Uint8Array(arrayBuffer);
+
+    // If emulator already exists, reset before reloading
+    if (jgenesisEmu) {
+      jgenesisEmu.stop();
+    }
+
+    // Create emulator instance
+    jgenesisEmu = await JGenesis.create({
+      canvas: jgenesisCanvas,
+      audio: true, // set false for silent
+      // You can pass callbacks, saveRAM, settings, etc., if needed
     });
-    // Keyboard focus on click/tap
-    mdscreen.addEventListener("click",function(){this.focus();});
-  </script>
+
+    // Load ROM and start
+    jgenesisEmu.loadROM(romData);
+    jgenesisEmu.run();
+
+    // Canvas focus for keyboard controls
+    jgenesisCanvas.focus();
+  }
+});
+
+// Keyboard focus on click/tap
+jgenesisCanvas.addEventListener("click", function() { this.focus(); });
+</script>
 </body>
 </html>
