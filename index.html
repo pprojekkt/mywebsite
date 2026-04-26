@@ -2,459 +2,397 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>i got you</title>
-  <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Cormorant+Garamond:wght@300;400&display=swap" rel="stylesheet">
+  <title>.pprojekkt</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;700&display=swap" rel="stylesheet">
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-
     html, body {
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      background: #0e1218;
-    }
-
-    body { font-family: 'Cormorant Garamond', serif; }
-
-    body {
-      opacity: 1;
-      transition: opacity 0.55s ease;
-    }
-    body.fading {
-      opacity: 0;
-    }
-
-    .outside {
-      position: fixed;
-      inset: 0;
-      z-index: 0;
-      background: linear-gradient(180deg, #080c12 0%, #0e1520 60%, #111a24 100%);
-    }
-
-    canvas {
-      position: fixed;
-      inset: 0;
-      z-index: 1;
-      pointer-events: none;
-    }
-
-    .vignette {
-      position: fixed;
-      inset: 0;
-      background: radial-gradient(ellipse at 50% 40%, transparent 25%, #080c12 100%);
-      pointer-events: none;
-      z-index: 2;
-    }
-
-    /* ── who link top-right ── */
-    .who-link {
-      position: fixed;
-      top: 1.4rem;
-      right: 1.6rem;
-      z-index: 20;
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1rem;
-      font-weight: 400;
-      letter-spacing: 0.22em;
-      text-transform: lowercase;
-      color: rgba(100,130,155,0.7);
-      text-decoration: none;
-      border-bottom: 1px solid transparent;
-      padding: 0.2rem 0.15rem;
-      cursor: pointer;
-      transition: color 0.3s, border-color 0.3s;
-      opacity: 0;
-      animation: fadeInUI 2s ease forwards;
-      animation-delay: 0.5s;
-    }
-
-    .who-link:hover {
-      color: rgba(150,185,215,0.88);
-      border-bottom-color: rgba(120,160,200,0.35);
-    }
-
-    @keyframes fadeInUI {
-      to { opacity: 1; }
-    }
-
-    /* ── now playing + volume ── */
-    .top-left {
-      position: fixed;
-      top: 1.4rem;
-      left: 1.6rem;
-      z-index: 10;
-      display: flex;
-      flex-direction: column;
-      gap: 0.55rem;
-      opacity: 0;
-      transition: opacity 2s ease;
-    }
-    .top-left.visible { opacity: 1; }
-
-    .np-row {
-      display: flex;
-      align-items: center;
-      gap: 0.55rem;
-    }
-
-    .np-dot {
-      width: 5px;
-      height: 5px;
-      border-radius: 50%;
-      background: #607080;
-      animation: pulse 3s ease-in-out infinite;
-      flex-shrink: 0;
-    }
-    @keyframes pulse {
-      0%, 100% { opacity: 0.2; }
-      50% { opacity: 0.9; }
-    }
-
-    .np-text {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 0.75rem;
-      font-weight: 400;
-      letter-spacing: 0.13em;
-      color: #5a7080;
-    }
-    .np-title { color: #7a9ab0; }
-
-    .vol-row {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding-left: 0.05rem;
-    }
-
-    .vol-label {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 0.68rem;
-      font-weight: 400;
-      letter-spacing: 0.14em;
-      color: #4a6070;
-      text-transform: lowercase;
-      user-select: none;
-    }
-
-    .vol-slider {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 70px;
-      height: 2px;
-      background: #2e4050;
-      outline: none;
-      border: none;
-      border-radius: 2px;
-      cursor: pointer;
-    }
-
-    .vol-slider::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: #607080;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-
-    .vol-slider::-webkit-slider-thumb:hover {
-      background: rgba(160,200,240,0.8);
-    }
-
-    .vol-slider::-moz-range-thumb {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: #607080;
-      border: none;
-      cursor: pointer;
-    }
-
-    /* ── main ── */
-    .wrap {
-      position: relative;
-      z-index: 5;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 3rem;
-      padding: 2rem;
-    }
-
-    .sentence {
-      display: flex;
-      align-items: baseline;
-      gap: 0.5rem;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-
-    .static-word {
-      font-family: 'IM Fell English', serif;
-      font-size: clamp(2rem, 6vw, 3.6rem);
-      font-weight: 400;
-      color: rgba(200,215,235,0.75);
-      letter-spacing: 0.04em;
-    }
-
-    .word-slot {
-      min-width: 200px;
-      display: flex;
-      align-items: baseline;
-      justify-content: center;
+      background: #050807;
+      width: 100vw; height: 100vh;
+      font-family: 'IBM Plex Mono', monospace;
+      margin: 0; padding: 0;
+      color: #fff;
       overflow: hidden;
     }
-
-    .word-display {
-      font-family: 'IM Fell English', serif;
-      font-style: italic;
-      font-size: clamp(2rem, 6vw, 3.6rem);
-      font-weight: 400;
-      color: rgba(160,200,240,0.9);
-      letter-spacing: 0.04em;
-      white-space: nowrap;
+    .crt-bg {
+      position:fixed; inset:0; pointer-events:none; z-index:0;
+      background: repeating-linear-gradient(
+        to bottom,
+        rgba(0,255,128,0.09) 0,
+        rgba(0,255,128,0.07) 1.1px,
+        transparent 3px,
+        transparent 6.2px
+      );
+      opacity:.09; mix-blend-mode:screen;
     }
-
-    .word-display.spinning {
-      animation: flicker 0.09s linear infinite;
+    .crt-scanline {
+      position:fixed;left:0;right:0;
+      height:2px;
+      background:linear-gradient(90deg,transparent,#00FF80 73%,transparent);
+      opacity:.09;top:33vh;
+      animation:scan 5.8s linear infinite;
+      z-index: 1;pointer-events:none;
+      filter: blur(.85px);
+      mix-blend-mode:screen
     }
-
-    @keyframes flicker {
-      0%   { opacity: 1; }
-      50%  { opacity: 0.1; }
-      100% { opacity: 1; }
+    @keyframes scan {
+      0% { top:0; }
+      100% { top:100vh; }
     }
-
-    .divider {
-      width: 36px;
-      height: 1px;
-      background: rgba(100,140,180,0.18);
+    .container {
+      min-height:100vh;width:100vw;z-index:10;position:relative;
+      display:flex;flex-direction:column; align-items:center; justify-content:center;
+      box-shadow:0 0 55px #00ff8035 inset;
     }
-
-    .spin-btn {
+    main {
+      margin-top:1vw;
+      display:flex;flex-direction:column;align-items:center;width:100vw;min-height:67vh;
+    }
+    .pprojekkt {
+      font-size:clamp(1.7rem,7vw,3.5rem) !important;
+      font-weight:700;
+      color:#00FF80;
+      letter-spacing:.07em;
+      text-shadow: 0 0 17px #00ff809f, 0 0 3px #3f8, 0 0 1px #fff9; /* Increased glow */
+      margin-bottom:2.2rem;
+      margin-top:1.2vw;
+      text-align:center;
+      font-family:'IBM Plex Mono', monospace;
+      user-select: all;
+      line-height:1.16;
+      transition: font-size .2s;
+    }
+    /* --- Music player --- */
+    .music-player-wrap {
+      background: rgba(5,18,11,0.90);
+      border: 1.1px solid #00FF8011;
+      border-radius: 7px;
+      width: 300px; max-width: 94vw;
+      margin: 0.25rem auto 0;
+      box-shadow: 0 0 10px #00ff8010;
+      padding: 0.60rem 0.51rem 0.52rem;
+      color: #00FF80;
+      display: flex; flex-direction: column;
+      align-items: flex-start;
+      font-size:0.93em;
+      margin-bottom: 2.8rem !important;
+    }
+    .music-meta {
+      font-size:0.98em;font-weight: 700;margin: 0 0 .18em 0;letter-spacing: 0.01em;
+      text-shadow: 0 0 9px #00ff80c5, 0 0 2.2px #3f8, 0 0 1px #fff7;
+    }
+    .music-controls {
+      display:flex; gap:.36em; flex-direction:row;align-items:center;
+      margin-bottom:0.02em;margin-top:0.01em;width:100%;justify-content:flex-start;
+    }
+    .music-controls button {
+      font-family:'IBM Plex Mono', monospace;
+      font-size:0.95em;
+      padding:.09em 0.57em;
       background: transparent;
-      border: none;
-      border-bottom: 1px solid rgba(100,140,180,0.25);
-      color: rgba(100,140,180,0.55);
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.15rem;
-      font-weight: 400;
-      letter-spacing: 0.28em;
-      padding: 0.5rem 0.2rem;
-      cursor: pointer;
-      text-transform: lowercase;
-      transition: color 0.3s, border-color 0.3s;
+      color: #00FF80;
+      border: 1px solid #00FF8019;
+      border-radius:1.6px;
+      margin-bottom:0.02em;
+      margin-top:0.02em;
+      cursor:pointer;line-height:1.10;height: 1.34em;min-width: 3.2em;
+      letter-spacing:0.01em;white-space: nowrap;overflow: hidden;
+      vertical-align:middle;box-sizing: border-box;text-align:center;
+      display: flex;align-items: center;justify-content: center;
+      transition: background .21s, color .13s, border-color .11s;
+      text-shadow: 0 0 6px #00ff8044, 0 0 2px #3f8, 0 0 1.2px #fff6;
     }
-
-    .spin-btn:hover {
-      color: rgba(160,200,240,0.85);
-      border-color: rgba(120,160,200,0.45);
+    .music-controls button:disabled { opacity:.39;}
+    .music-controls button:hover:not(:disabled) {
+      background:rgba(0,255,128,0.18);color:#fff; border-color: #00FF80;
     }
-
-    .spin-btn.running {
-      pointer-events: none;
-      color: rgba(60,80,100,0.2);
-      border-color: rgba(60,80,100,0.1);
+    .music-player-progress {
+      margin: 2px 0 4px 0;
+      width: 100%; height: 4px;
+      background: #03160c;
+      border-radius:2px; position:relative; overflow:hidden;
     }
-
-    /* ── branding ── */
+    .music-player-progress .fill {
+      height:100%; background:linear-gradient(90deg,#00ff80 10%,#59ffb3 80%);
+      width:0%;border-radius:2px;
+      box-shadow: 0 0 3px #00ff802a;
+      transition: width .1s linear;
+    }
+    .music-volume-wrap {
+      display:flex; align-items:center;
+      gap:.20em; margin:0 0 0.09em 0;
+      font-size:.85em; color: #00FF80;
+      text-shadow: 0 0 8.5px #00ff8080;
+    }
+    .music-volume-slider {
+      appearance:none;width:48px;height:3px;
+      background:#002518;border-radius:2px;
+      margin:0 .10em; outline:none; cursor:pointer;
+      box-shadow:0 0 2.2px #00ff803b inset;
+    }
+    .music-volume-slider::-webkit-slider-thumb {
+      -webkit-appearance:none;appearance:none;
+      width:7px;height:7px;border-radius:50%;
+      background:#00FF80;
+      box-shadow:0 0 1.8px #00FF80,0 0 1px #003a18;
+      border:0; cursor:pointer; transition:background .12s;
+    }
+    .music-volume-slider::-moz-range-thumb {width:7px;height:7px;border-radius:50%;background:#00FF80;cursor:pointer;}
+    .music-volume-slider:focus {outline:1px solid #00FF80;}
+    .music-playlist {
+      display:flex; gap:.19em; flex-wrap:wrap;margin-top:2px;
+    }
+    .music-playlist button {
+      background:transparent; color:#00FF80;
+      padding:.03em 0.57em;
+      border:1px solid #00FF8017;
+      border-radius:1.5px;
+      cursor:pointer;font-size:.92em;
+      margin-bottom:2px;transition:background.11s;
+      font-family:'IBM Plex Mono',monospace;
+      min-width:1.4em;text-align:center;
+      text-shadow: 0 0 8px #00ff80b0, 0 0 1.6px #3f8;
+    }
+    .music-playlist button.active,
+    .music-playlist button:hover:not(:disabled) {
+      background: #00FF80; color: #001415;
+    }
+    .music-playlist button:disabled {opacity:.26;}
+    /* --- Visit counter --- */
+    .visit-counter {
+      font-size: .80rem; color: #00FF80bd; background: #071a12b4;
+      border: 1px solid #00ff8006; border-radius:5px;
+      padding: .07em 0.6em; letter-spacing: .03em;
+      font-family:'IBM Plex Mono', monospace; user-select: all; text-align:center;
+      min-width:54px; opacity:.89;
+      position:fixed;top:11px;right:12px;z-index:12;
+      text-shadow: 0 0 5px #00ff80b0;
+    }
+    /* --- Digital Clock Gadget --- */
+    .digital-clock-gadget {
+      position: fixed; left: 12px; bottom: 13px; z-index: 14;
+      background: #000e08e8; border: 1.0px solid #00FF800E;
+      border-radius: 5px; padding: 5px 11px 3px;
+      color: #00FF80; font-family: 'IBM Plex Mono', monospace;
+      font-size: 1em; box-shadow: 0 0 7px #00ff801c;
+      text-shadow: 0 0 12px #00ff80b6, 0 0 3px #fff5, 0 0 2px #3f8;
+      letter-spacing: .11em; opacity:.93; user-select: all; text-align:center; min-width:70px;
+    }
+    /* --- Emulator bottom right --- */
+    .emulator-window {
+      position:fixed; bottom:18px; right:16px;
+      width:510px; height:375px;
+      background: #181e1b;
+      border: 1.4px solid #00FF8015;
+      border-radius:10px;
+      box-shadow:0 0 22px #00FF8033, 0 2px 13px #1a1f1b;
+      z-index:990; padding: 0; min-width:220px; min-height:120px;
+      filter:none; pointer-events:auto;display:flex;
+      flex-direction:column;align-items:center;justify-content:flex-start;
+    }
+    .emu-titlebar {
+      width:100%;height:28px;cursor:default;
+      background: #171c1a; color: #00FF80;font-family:inherit;
+      font-size:1.06em;font-weight:700;letter-spacing:.09em;
+      border-radius: 10px 10px 0 0;
+      display:flex;align-items:center;justify-content:center;
+      user-select:none;border-bottom:1px solid #00FF8012;
+      padding-top: 1px; min-height:unset;
+      text-shadow: 0 0 12px #00ff8077;
+    }
+    .emulator-area {
+      width:99%;height:312px;align-items:center;justify-content:center;
+      background: #121812; border-radius:9px; margin: 0 0 0 0;
+      padding:0; box-shadow:0 0 13px #00FF803d inset;display:flex;overflow:hidden;
+    }
+    .emulator-area iframe {
+      border: 1.4px solid #222; border-radius:5.5px; background: #111;
+      width:475px; height:300px; margin:0;box-shadow: 0 0 12px #00FF8036;display:block;
+    }
+    .emu-keybinds {
+      width:99%;text-align:center;
+      margin: 1px 0 0 0;color:#00FF80;
+      font-size: .92em;font-family:inherit;opacity:.68;
+      font-weight:600;letter-spacing: .05em;
+      background: none;border: none;user-select: all;padding: 0;
+      text-shadow: 0 0 7px #00ff80b5;
+    }
     .branding {
-      position: fixed;
-      bottom: 1.4rem;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 10;
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 0.92rem;
-      font-weight: 400;
-      letter-spacing: 0.26em;
-      color: #6a8fa8;
-      text-transform: lowercase;
-      white-space: nowrap;
-      user-select: none;
+      position:fixed;bottom:8px;left:0;right:0;text-align:center;z-index:23;font-family:'IBM Plex Mono', monospace;
+      font-size: .71rem;color:#00FF8070;letter-spacing: 0.12em;
+      user-select: none;text-shadow: 0 0 1.2px #00ff8090;pointer-events: none;
+    }
+    @media (max-width: 700px) {
+      .music-player-wrap {width:98vw;min-width:99vw;max-width:99vw;}
+      .visit-counter {right:2vw !important;top:2vw;}
+      .emulator-window {right:1vw;bottom:2vw;width:98vw;height:175px !important;}
+      .emulator-area iframe {width:96vw !important;height:100px !important;}
+      .digital-clock-gadget {left:1vw;bottom:3vw;}
     }
   </style>
 </head>
 <body>
-
-  <div class="outside"></div>
-  <canvas id="c"></canvas>
-  <div class="vignette"></div>
-
-  <!-- Who link -->
-  <a class="who-link" id="whoLink" href="#">who</a>
-
-  <div class="top-left" id="topLeft">
-    <div class="np-row">
-      <div class="np-dot"></div>
-      <div class="np-text">now playing &nbsp;<span class="np-title">yesterday — vs self</span></div>
-    </div>
-    <div class="vol-row">
-      <span class="vol-label">vol</span>
-      <input class="vol-slider" type="range" min="0" max="1" step="0.01" value="0.8" id="vol">
-    </div>
-  </div>
-
-  <div class="branding">rapture®</div>
-
-  <audio id="audio" loop>
-    <source src="https://raw.githubusercontent.com/newyork482/igotyoulol/main/music/song.mp3" type="audio/mpeg">
-  </audio>
-  <audio id="rain" loop>
-    <source src="https://assets.mixkit.co/active_storage/sfx/2515/2515-preview.mp3" type="audio/mpeg">
-  </audio>
-
-  <div class="wrap">
-    <div class="sentence">
-      <span class="static-word">rapture</span>
-      <div class="word-slot">
-        <span class="word-display" id="word">season</span>
+  <div class="crt-bg"></div>
+  <div class="crt-scanline"></div>
+  <div class="container">
+    <main>
+      <div class="pprojekkt">.pprojekkt</div>
+      <!-- Music Player -->
+      <div class="music-player-wrap" id="musicPlayer">
+        <div class="music-meta" id="musicMeta"></div>
+        <div class="music-controls">
+          <button id="prevBtn" title="Previous">[prev]</button>
+          <button id="playPauseBtn" title="Play">[play]</button>
+          <button id="nextBtn" title="Next">[next]</button>
+          <span id="musicTime" style="flex:1;text-align:right;min-width:2.3em;">0:00</span>
+        </div>
+        <div class="music-volume-wrap">
+          <span style="font-size:.83em;letter-spacing:0.05em;opacity:0.7;">vol-</span>
+          <input type="range" min="0" max="1" step="0.01" value="1" class="music-volume-slider" id="musicVolume">
+          <span style="font-size:.83em;letter-spacing:0.05em;opacity:0.7;">vol+</span>
+        </div>
+        <div class="music-player-progress">
+          <div class="fill" id="musicProgress"></div>
+        </div>
+        <div class="music-playlist" id="musicPlaylist"></div>
+        <audio id="audio" preload="metadata"></audio>
       </div>
-    </div>
-    <div class="divider"></div>
-    <button class="spin-btn" id="btn" onclick="spin()">again</button>
+    </main>
   </div>
-
+  <div class="visit-counter" id="visitCounter"></div>
+  <div class="digital-clock-gadget" id="digitalClock"></div>
+  <!-- Emulator (Retroarch WASM integration) -->
+  <div class="emulator-window" id="emuWindow">
+    <div class="emu-titlebar">SEGA MD/CD/32X</div>
+    <div class="emulator-area">
+      <!-- Latest working RetroArch WASM - loads fast, no overlays -->
+      <iframe
+        src="https://web.libretro.com/?core=genesis_plus_gx"
+        allowfullscreen
+        style="background:#000; width:475px; height:300px; border:none;"
+      ></iframe>
+    </div>
+    <div class="emu-keybinds">
+      Keys: In-Emulator (Configure/resume in Menu) • Load ROM (File menu)
+    </div>
+  </div>
+  <div class="branding">rapture®</div>
   <script>
-    // ── who link ──────────────────────────────────────────────
-    try { history.replaceState(null, '', 'https://igotyou.lol'); } catch(e) {}
-    document.getElementById('whoLink').addEventListener('click', function(e) {
-      e.preventDefault();
-      document.body.classList.add('fading');
-      setTimeout(() => {
-        window.location.href = '/b/who.html';
-      }, 560);
-    });
-
-    // ── audio + volume ─────────────────────────────────────────
-    const audio     = document.getElementById('audio');
-    const rain      = document.getElementById('rain');
-    const topLeft   = document.getElementById('topLeft');
-    const volSlider = document.getElementById('vol');
-
-    audio.volume = 0.8;
-
-    volSlider.addEventListener('input', () => {
-      audio.volume = parseFloat(volSlider.value);
-    });
-    volSlider.addEventListener('change', () => {
-      audio.volume = parseFloat(volSlider.value);
-    });
-
-    // ── rain ──────────────────────────────────────────────────
-    const canvas = document.getElementById('c');
-    const ctx = canvas.getContext('2d');
-    let W, H;
-
-    function resize() {
-      W = canvas.width  = window.innerWidth;
-      H = canvas.height = window.innerHeight;
+    // Visit counter
+    let vc = localStorage.getItem('pprojekkt_visits');
+    vc = vc ? +vc+1 : 1;
+    localStorage.setItem('pprojekkt_visits',vc);
+    document.getElementById('visitCounter').textContent="VISITS: " + vc;
+    // Digital clock UTC+3
+    function pad(n){return n<10?"0"+n:n;}
+    function updateClock() {
+      const d = new Date();
+      let h = d.getUTCHours() + 3;
+      let m = d.getUTCMinutes();
+      let s = d.getUTCSeconds();
+      if(h >= 24) h -= 24;
+      document.getElementById('digitalClock').textContent = `${pad(h)}:${pad(m)}:${pad(s)}`;
     }
-    resize();
-    window.addEventListener('resize', resize);
+    setInterval(updateClock, 950); updateClock();
 
-    function newStreak(scatter) {
-      const len = 15 + Math.random() * 35;
-      return {
-        x:     Math.random() * (W + 60) - 30,
-        y:     scatter ? Math.random() * H : -len,
-        len,
-        speed: 6 + Math.random() * 10,
-        alpha: 0.03 + Math.random() * 0.1,
-        width: 0.4 + Math.random() * 0.7,
-      };
-    }
-
-    const streaks = Array.from({ length: 140 }, () => newStreak(true));
-
-    function animate() {
-      ctx.clearRect(0, 0, W, H);
-      streaks.forEach(s => {
-        ctx.save();
-        ctx.globalAlpha = s.alpha;
-        ctx.strokeStyle = 'rgba(180,210,245,1)';
-        ctx.lineWidth = s.width;
-        ctx.lineCap = 'round';
-        ctx.beginPath();
-        ctx.moveTo(s.x, s.y);
-        ctx.lineTo(s.x - s.len * 0.12, s.y + s.len);
-        ctx.stroke();
-        ctx.restore();
-        s.y += s.speed;
-        s.x -= s.speed * 0.12;
-        if (s.y - s.len > H || s.x < -60) Object.assign(s, newStreak(false));
-      });
-      requestAnimationFrame(animate);
-    }
-    animate();
-
-    // ── words ──────────────────────────────────────────────────
-    const words = [
-      "season", "time", "calls", "waits", "arrives",
-      "never sleeps", "finds you", "knows", "sees all", "remembers",
-      "forgives", "endures", "begins", "returns", "remains",
-      "fades slow", "cuts deep", "burns bright", "hits different", "stays",
-      "heals", "breaks", "builds", "falls", "rises",
-      "is near", "is now", "is real", "is quiet", "is loud",
-      "runs deep", "runs cold", "runs dry", "never lies", "never ends",
-      "has no mercy", "has no clock", "has no map", "has no name",
-      "takes its time", "takes everything", "takes nothing back",
-      "leaves marks", "leaves scars", "leaves beauty",
-      "speaks first", "speaks last", "speaks true",
-      "is patient", "is certain", "is violent", "is tender",
-      "was always here", "was always you", "was always this",
-      "chose you", "chose silence", "chose fire",
-      "feels heavy", "feels close", "feels like truth",
-      "moves slow", "moves fast", "moves like water",
-      "sounds like rain", "sounds like nothing", "sounds like everything",
-      "looks like peace", "looks like war", "looks like home",
-      "lives in the dark", "lives in the quiet", "lives in you",
-      "will find you", "will pass", "will matter"
-    ];
-
-    let current = "season";
-    let spinning = false;
-    let musicStarted = false;
-
-    function spin() {
-      if (spinning) return;
-      spinning = true;
-
-      if (!musicStarted) {
-        audio.play().then(() => topLeft.classList.add('visible')).catch(() => {});
-        const isMobile = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
-        rain.volume = isMobile ? 0.001 : 0.008;
-        rain.play().catch(() => {});
-        musicStarted = true;
+    // Music Player logic (unchanged)
+    const audio = document.getElementById("audio");
+    const playPauseBtn = document.getElementById("playPauseBtn");
+    const prevBtn = document.getElementById("prevBtn");
+    const nextBtn = document.getElementById("nextBtn");
+    const metaEl = document.getElementById("musicMeta");
+    const progressEl = document.getElementById("musicProgress");
+    const playlistEl = document.getElementById("musicPlaylist");
+    const musicTime = document.getElementById("musicTime");
+    const volumeSlider = document.getElementById("musicVolume");
+    const musicLibrary = [
+      {
+        title: "A Star Called the Sun",
+        artist: "Kino",
+        src: "https://raw.githubusercontent.com/fIoating/igotyou/main/music/AStarCalledtheSun.mp3",
+      },
+      {
+        title: "yesterday",
+        artist: "vs self",
+        src: "https://raw.githubusercontent.com/fIoating/igotyou/main/music/imagine.mp3",
+      },
+      {
+        title: "Char (Sped Up)",
+        artist: "Crystal Castles",
+        src: "https://raw.githubusercontent.com/fIoating/igotyou/main/music/char.mp3"
       }
-
-      const el  = document.getElementById('word');
-      const btn = document.getElementById('btn');
-      btn.classList.add('running');
-      el.classList.add('spinning');
-      const pool     = words.filter(w => w !== current);
-      const next     = pool[Math.floor(Math.random() * pool.length)];
-      const shuffled = [...pool].sort(() => Math.random() - 0.5);
-      let ticks = 0;
-      const total = 20 + Math.floor(Math.random() * 10);
-      const interval = setInterval(() => {
-        el.textContent = shuffled[ticks % shuffled.length];
-        ticks++;
-        if (ticks >= total) {
-          clearInterval(interval);
-          el.textContent = next;
-          current = next;
-          el.classList.remove('spinning');
-          btn.classList.remove('running');
-          spinning = false;
-        }
-      }, 70);
+    ];
+    let currentTrack = 0;
+    function updateMeta(idx) {
+      const t = musicLibrary[idx];
+      if (!t || !t.src) {
+        metaEl.textContent = "— no song loaded —";
+        playPauseBtn.disabled = true;
+      } else {
+        metaEl.textContent = `${t.title} by ${t.artist}`;
+        playPauseBtn.disabled = false;
+      }
+      Array.from(playlistEl.children).forEach((btn,i) => {
+        btn.classList.toggle("active", i===idx);
+      });
     }
+    function updateProgress() {
+      if (audio.duration) {
+        progressEl.style.width = ((audio.currentTime/audio.duration)*100).toFixed(1)+"%";
+        const min = Math.floor(audio.currentTime/60), sec = String(Math.floor(audio.currentTime%60)).padStart(2,'0');
+        musicTime.textContent = `${min}:${sec}`;
+      } else {
+        progressEl.style.width = "0%";
+        musicTime.textContent = '0:00';
+      }
+    }
+    function playTrack(idx){
+      if (!musicLibrary[idx].src) return;
+      audio.src = musicLibrary[idx].src;
+      audio.play().catch(()=>{});
+      updateMeta(idx);
+      currentTrack=idx;
+    }
+    playlistEl.innerHTML = "";
+    musicLibrary.forEach((t,i)=>{
+      const btn = document.createElement("button");
+      btn.textContent = t.title;
+      btn.disabled = !t.src;
+      btn.onclick = ()=>playTrack(i);
+      playlistEl.appendChild(btn);
+    });
+    updateMeta(currentTrack);
+    playPauseBtn.onclick = ()=>{
+      if (!audio.src) playTrack(currentTrack);
+      else if (audio.paused) audio.play();
+      else audio.pause();
+    };
+    prevBtn.onclick=()=>{
+      let prev = (currentTrack-1+musicLibrary.length)%musicLibrary.length;
+      while (!musicLibrary[prev].src && prev!==currentTrack) prev = (prev-1+musicLibrary.length)%musicLibrary.length;
+      playTrack(prev);
+    };
+    nextBtn.onclick=()=>{
+      let next = (currentTrack+1)%musicLibrary.length;
+      while (!musicLibrary[next].src && next!==currentTrack) next = (next+1)%musicLibrary.length;
+      playTrack(next);
+    };
+    audio.addEventListener("playing", ()=>{ playPauseBtn.innerHTML = "[play]"; });
+    audio.addEventListener("pause", ()=>{ playPauseBtn.innerHTML = "[play]"; });
+    audio.addEventListener("ended", ()=>{ nextBtn.click(); });
+    audio.addEventListener("loadedmetadata",updateProgress);
+    audio.addEventListener("timeupdate",updateProgress);
+    volumeSlider.addEventListener("input", function() {
+      audio.volume = this.valueAsNumber;
+    });
+    audio.volume = volumeSlider.valueAsNumber;
+    progressEl.parentElement.addEventListener("click", function(e){
+      if (!audio.src) return;
+      const rect = this.getBoundingClientRect();
+      const pct = (e.clientX-rect.left)/rect.width;
+      if (!isNaN(audio.duration)) audio.currentTime = pct*audio.duration;
+    });
+    updateProgress();
   </script>
 </body>
 </html>
