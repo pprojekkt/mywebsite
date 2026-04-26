@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>who</title>
+  <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Cormorant+Garamond:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #080500;
+    }
+
+    body {
+      font-family: 'Cormorant Garamond', serif;
+      opacity: 0;
+      animation: fadeIn 0.6s ease forwards;
+    }
+
+    @keyframes fadeIn { to { opacity: 1; } }
+
+    body.fading {
+      opacity: 0;
+      transition: opacity 0.55s ease;
+    }
+
+    /* ── video background ── */
+    .vid-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .vid-bg video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center bottom;
+      filter: brightness(0.85);
+    }
+
+    /* ── overlays ── */
+    .vignette {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      background: radial-gradient(ellipse at 50% 55%, transparent 25%, rgba(4,2,1,0.6) 100%);
+    }
+
+    .fog {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      background: linear-gradient(180deg,
+        rgba(6,4,2,0.72) 0%,
+        rgba(6,4,2,0.08) 30%,
+        transparent 55%,
+        transparent 100%
+      );
+    }
+
+    /* ── rain canvas ── */
+    canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    /* ── back link ── */
+    .back-link {
+      position: fixed;
+      top: 1.4rem;
+      left: 1.6rem;
+      z-index: 20;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1rem;
+      font-weight: 400;
+      letter-spacing: 0.22em;
+      text-transform: lowercase;
+      color: rgba(210,170,95,0.65);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      padding: 0.2rem 0.15rem;
+      cursor: pointer;
+      transition: color 0.3s, border-color 0.3s;
+      opacity: 0;
+      animation: fadeInUI 2s ease forwards;
+      animation-delay: 0.4s;
+    }
+
+    .back-link:hover {
+      color: rgba(235,195,125,0.92);
+      border-bottom-color: rgba(210,170,95,0.38);
+    }
+
+    @keyframes fadeInUI { to { opacity: 1; } }
+
+    /* ── title ── */
+    .title {
+      position: fixed;
+      top: 1.35rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 20;
+      font-family: 'IM Fell English', serif;
+      font-style: italic;
+      font-size: 1rem;
+      letter-spacing: 0.18em;
+      color: rgba(215,178,112,0.45);
+      white-space: nowrap;
+      opacity: 0;
+      animation: fadeInUI 2s ease forwards;
+      animation-delay: 0.6s;
+    }
+
+    /* ── branding ── */
+    .branding {
+      position: fixed;
+      bottom: 1.4rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 20;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.92rem;
+      font-weight: 400;
+      letter-spacing: 0.26em;
+      color: rgba(195,148,78,0.78);
+      text-transform: lowercase;
+      white-space: nowrap;
+      user-select: none;
+    }
+
+    /* ── profile row ── */
+    .wrap {
+      position: relative;
+      z-index: 10;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1.2rem;
+      flex-wrap: nowrap;
+    }
+
+    .profile {
+      opacity: 0;
+      animation: profileIn 0.8s ease forwards;
+      position: relative;
+    }
+
+    .profile:nth-child(1) { animation-delay: 0.3s; }
+    .profile:nth-child(2) { animation-delay: 0.42s; }
+    .profile:nth-child(3) { animation-delay: 0.54s; }
+    .profile:nth-child(4) { animation-delay: 0.66s; }
+    .profile:nth-child(5) { animation-delay: 0.78s; }
+    .profile:nth-child(6) { animation-delay: 0.90s; }
+    .profile:nth-child(7) { animation-delay: 1.02s; }
+
+    @keyframes profileIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .avatar {
+      width: 130px;
+      height: 130px;
+      border-radius: 4px;
+      border: 1px solid rgba(205,158,78,0.28);
+      background: rgba(18,12,4,0.55);
+      overflow: hidden;
+      cursor: pointer;
+      transition: border-color 0.3s, box-shadow 0.3s, transform 0.2s;
+      backdrop-filter: blur(3px);
+    }
+
+    .avatar:hover {
+      border-color: rgba(225,178,100,0.58);
+      box-shadow: 0 0 24px rgba(205,145,45,0.18);
+      transform: translateY(-2px);
+    }
+
+    .avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      /* sharper rendering on hi-dpi screens */
+      transform: translateZ(0);
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+      will-change: transform;
+      image-rendering: -webkit-optimize-contrast;
+      image-rendering: crisp-edges;
+    }
+
+    .avatar-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ── player popup ── */
+    .player-popup {
+      position: fixed;
+      z-index: 100;
+      width: 260px;
+      background: rgba(6, 4, 2, 0.93);
+      border: 1px solid rgba(205,158,78,0.18);
+      border-radius: 6px;
+      backdrop-filter: blur(22px);
+      padding: 1.2rem;
+      pointer-events: all;
+      opacity: 0;
+      transform: scale(0.93) translateY(10px);
+      transition: opacity 0.28s cubic-bezier(.4,0,.2,1), transform 0.28s cubic-bezier(.4,0,.2,1);
+    }
+
+    .player-popup.visible {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+
+    .player-popup.hidden {
+      pointer-events: none;
+    }
+
+    .popup-inner {
+      display: flex;
+      flex-direction: column;
+      gap: 0.9rem;
+    }
+
+    .popup-top {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+
+    .popup-art {
+      width: 46px;
+      height: 46px;
+      border-radius: 3px;
+      object-fit: cover;
+      flex-shrink: 0;
+      border: 1px solid rgba(205,158,78,0.2);
+    }
+
+    .popup-info {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+      min-width: 0;
+    }
+
+    .popup-title {
+      font-family: 'IM Fell English', serif;
+      font-style: italic;
+      font-size: 0.9rem;
+      color: rgba(230,210,175,0.92);
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .popup-artist {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.7rem;
+      font-weight: 400;
+      letter-spacing: 0.16em;
+      color: rgba(185,145,80,0.65);
+      text-transform: lowercase;
+    }
+
+    /* progress */
+    .popup-progress {
+      display: flex;
+      flex-direction: column;
+      gap: 0.32rem;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 2px;
+      background: rgba(205,158,78,0.12);
+      border-radius: 2px;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .progress-track:hover .progress-fill {
+      background: rgba(225,185,105,0.85);
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: rgba(205,158,78,0.55);
+      border-radius: 2px;
+      width: 0%;
+      transition: width 0.25s linear, background 0.2s;
+      pointer-events: none;
+    }
+
+    .progress-times {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .progress-time {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.62rem;
+      letter-spacing: 0.1em;
+      color: rgba(185,145,80,0.45);
+    }
+
+    /* controls */
+    .popup-controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .ctrl-btn {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 0.35rem;
+      color: rgba(210,170,95,0.7);
+      transition: color 0.2s, transform 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .ctrl-btn:hover {
+      color: rgba(240,210,140,0.95);
+      transform: scale(1.12);
+    }
+
+    /* volume */
+    .popup-vol {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+    }
+
+    .vol-label {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.14em;
+      color: rgba(185,145,80,0.45);
+      text-transform: lowercase;
+      flex-shrink: 0;
+    }
+
+    .vol-slider {
+      -webkit-appearance: none;
+      appearance: none;
+      flex: 1;
+      height: 2px;
+      background: rgba(205,158,78,0.12);
+      outline: none;
+      border: none;
+      border-radius: 2px;
+      cursor: pointer;
+    }
+
+    .vol-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(210,170,95,0.75);
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .vol-slider::-webkit-slider-thumb:hover {
+      background: rgba(240,210,140,0.95);
+    }
+
+    .vol-slider::-moz-range-thumb {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(210,170,95,0.75);
+      border: none;
+      cursor: pointer;
+    }
+
+    @media (max-width: 680px) {
+      .avatar { width: 60px; height: 60px; }
+      .row { gap: 0.65rem; }
+      .player-popup { width: 220px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- video bg -->
+  <div class="vid-bg">
+    <video id="bgVid" autoplay muted loop playsinline>
+      <source src="https://raw.githubusercontent.com/newyork482/igotyoulol/main/video/city.mp4" type="video/mp4">
+    </video>
+  </div>
+
+  <!-- overlays -->
+  <div class="fog"></div>
+  <div class="vignette"></div>
+
+  <!-- rain -->
+  <canvas id="c"></canvas>
+
+  <!-- UI chrome -->
+  <a class="back-link" id="backLink" href="#">back</a>
+  <div class="title">who</div>
+  <div class="branding">rapture®</div>
+
+  <!-- audio -->
+  <audio id="trackAudio" loop>
+    <source src="https://github.com/newyork482/igotyoulol/raw/refs/heads/main/music/maajins%20-%20stop%20me%20%28dir.%20micahmp3%29.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- player popup (fables) -->
+  <div class="player-popup hidden" id="playerPopup">
+    <div class="popup-inner">
+      <div class="popup-top">
+        <img class="popup-art" src="https://raw.githubusercontent.com/newyork482/igotyoulol/main/pictures/1.jpg" alt="art">
+        <div class="popup-info">
+          <div class="popup-title">stop me</div>
+          <div class="popup-artist">maajins</div>
+        </div>
+      </div>
+      <div class="popup-progress">
+        <div class="progress-track" id="progressTrack">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="progress-times">
+          <span class="progress-time" id="timeCurrent">0:00</span>
+          <span class="progress-time" id="timeDuration">—</span>
+        </div>
+      </div>
+      <div class="popup-controls">
+        <button class="ctrl-btn" id="playPauseBtn">
+          <svg id="iconPlay" width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          <svg id="iconPause" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+        </button>
+      </div>
+      <div class="popup-vol">
+        <span class="vol-label">vol</span>
+        <input class="vol-slider" type="range" min="0" max="1" step="0.01" value="0.8" id="volSlider">
+      </div>
+    </div>
+  </div>
+
+  <!-- audio (unki) -->
+  <audio id="trackAudio5" loop>
+    <source src="https://github.com/newyork482/igotyoulol/raw/refs/heads/main/music/Kino%20-%20The%20Star%20%20%D0%9A%D0%B8%D0%BD%D0%BE%20-%20%D0%97%D0%B2%D0%B5%D0%B7%D0%B4%D0%B0.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- audio (pachelbel) -->
+  <audio id="trackAudio4" loop>
+    <source src="https://raw.githubusercontent.com/newyork482/igotyoulol/main/music/Pachelbel_%20Chaconne%20in%20F%20Minor.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- audio (skai) -->
+  <audio id="trackAudio3" loop>
+    <source src="https://github.com/newyork482/igotyoulol/raw/refs/heads/main/music/OsamaSon%20-%20%20ik%20what%20you%20did%20last%20summer%20%5BOfficial%20Music%20Video%5D.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- audio (kino) -->
+  <audio id="trackAudio2" loop>
+    <source src="https://raw.githubusercontent.com/newyork482/igotyoulol/main/music/AStarCalledtheSun.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- player popup (kino) -->
+  <div class="player-popup hidden" id="playerPopup2">
+    <div class="popup-inner">
+      <div class="popup-top">
+        <img class="popup-art" src="https://raw.githubusercontent.com/newyork482/igotyoulol/main/pictures/2.png" alt="art">
+        <div class="popup-info">
+          <div class="popup-title">a star called the sun</div>
+          <div class="popup-artist">kino</div>
+        </div>
+      </div>
+      <div class="popup-progress">
+        <div class="progress-track" id="progressTrack2">
+          <div class="progress-fill" id="progressFill2"></div>
+        </div>
+        <div class="progress-times">
+          <span class="progress-time" id="timeCurrent2">0:00</span>
+          <span class="progress-time" id="timeDuration2">—</span>
+        </div>
+      </div>
+      <div class="popup-controls">
+        <button class="ctrl-btn" id="playPauseBtn2">
+          <svg id="iconPlay2" width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          <svg id="iconPause2" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+        </button>
+      </div>
+      <div class="popup-vol">
+        <span class="vol-label">vol</span>
+        <input class="vol-slider" type="range" min="0" max="1" step="0.01" value="0.8" id="volSlider2">
+      </div>
+    </div>
+  </div>
+
+  <!-- player popup (skai) -->
+  <div class="player-popup hidden" id="playerPopup3">
+    <div class="popup-inner">
+      <div class="popup-top">
+        <img class="popup-art" src="https://raw.githubusercontent.com/newyork482/igotyoulol/main/pictures/3.jpg" alt="art">
+        <div class="popup-info">
+          <div class="popup-title">ikwydls</div>
+          <div class="popup-artist">osamason</div>
+        </div>
+      </div>
+      <div class="popup-progress">
+        <div class="progress-track" id="progressTrack3">
+          <div class="progress-fill" id="progressFill3"></div>
+        </div>
+        <div class="progress-times">
+          <span class="progress-time" id="timeCurrent3">0:00</span>
+          <span class="progress-time" id="timeDuration3">—</span>
+        </div>
+      </div>
+      <div class="popup-controls">
+        <button class="ctrl-btn" id="playPauseBtn3">
+          <svg id="iconPlay3" width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          <svg id="iconPause3" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+        </button>
+      </div>
+      <div class="popup-vol">
+        <span class="vol-label">vol</span>
+        <input class="vol-slider" type="range" min="0" max="1" step="0.01" value="0.8" id="volSlider3">
+      </div>
+    </div>
+  </div>
+
+  <!-- player popup (pachelbel) -->
+  <div class="player-popup hidden" id="playerPopup4">
+    <div class="popup-inner">
+      <div class="popup-top">
+        <img class="popup-art" src="https://raw.githubusercontent.com/newyork482/igotyoulol/main/pictures/4.jpg" alt="art">
+        <div class="popup-info">
+          <div class="popup-title">chaconne in f minor</div>
+          <div class="popup-artist">pachelbel</div>
+        </div>
+      </div>
+      <div class="popup-progress">
+        <div class="progress-track" id="progressTrack4">
+          <div class="progress-fill" id="progressFill4"></div>
+        </div>
+        <div class="progress-times">
+          <span class="progress-time" id="timeCurrent4">0:00</span>
+          <span class="progress-time" id="timeDuration4">—</span>
+        </div>
+      </div>
+      <div class="popup-controls">
+        <button class="ctrl-btn" id="playPauseBtn4">
+          <svg id="iconPlay4" width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          <svg id="iconPause4" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+        </button>
+      </div>
+      <div class="popup-vol">
+        <span class="vol-label">vol</span>
+        <input class="vol-slider" type="range" min="0" max="1" step="0.01" value="0.8" id="volSlider4">
+      </div>
+    </div>
+  </div>
+
+  <!-- player popup (unki) -->
+  <div class="player-popup hidden" id="playerPopup5">
+    <div class="popup-inner">
+      <div class="popup-top">
+        <img class="popup-art" src="https://raw.githubusercontent.com/newyork482/igotyoulol/main/pictures/5.png" alt="art">
+        <div class="popup-info">
+          <div class="popup-title">the star</div>
+          <div class="popup-artist">kino</div>
+        </div>
+      </div>
+      <div class="popup-progress">
+        <div class="progress-track" id="progressTrack5">
+          <div class="progress-fill" id="progressFill5"></div>
+        </div>
+        <div class="progress-times">
+          <span class="progress-time" id="timeCurrent5">0:00</span>
+          <span class="progress-time" id="timeDuration5">—</span>
+        </div>
+      </div>
+      <div class="popup-controls">
+        <button class="ctrl-btn" id="playPauseBtn5">
+          <svg id="iconPlay5" width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          <svg id="iconPause5" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+        </button>
+      </div>
+      <div class="popup-vol">
+        <span class="vol-label">vol</span>
+        <input class="vol-slider" type="range" min="0" max="1" step="0.01" value="0.8" id="volSlider5">
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="row">
+      <!-- unki box -->
+      <div class="profile" id="profileUnki">
+        <div class="avatar" id="avatarUnki">
+          <img src="https://raw.githubusercontent.com/newyork482/igotyoulol/main/pictures/5.png" alt="pfp">
+        </div>
+      </div>
+      <!-- pachelbel box -->
+      <div class="profile" id="profilePachelbel">
+        <div class="avatar" id="avatarPachelbel">
+          <img src="https://raw.githubusercontent.com/newyork482/igotyoulol/main/pictures/4.jpg" alt="pfp">
+        </div>
+      </div>
+      <!-- kino box -->
+      <div class="profile" id="profileKino">
+        <div class="avatar" id="avatarKino">
+          <img src="https://raw.githubusercontent.com/newyork482/igotyoulol/main/pictures/2.png" alt="pfp">
+        </div>
+      </div>
+      <!-- middle box -->
+      <div class="profile" id="profileMid">
+        <div class="avatar" id="avatarMid">
+          <img src="https://raw.githubusercontent.com/newyork482/igotyoulol/main/pictures/1.jpg" alt="pfp">
+        </div>
+      </div>
+      <!-- skai box -->
+      <div class="profile" id="profileSkai">
+        <div class="avatar" id="avatarSkai">
+          <img src="https://raw.githubusercontent.com/newyork482/igotyoulol/main/pictures/3.jpg" alt="pfp">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ── back link ─────────────────────────────────────────────
+    history.replaceState(null, '', 'https://igotyou.lol');
+    document.getElementById('backLink').addEventListener('click', function(e) {
+      e.preventDefault();
+      document.body.classList.add('fading');
+      setTimeout(() => { window.location.href = 'https://igotyou.lol'; }, 560);
+    });
+
+    // ── rain ──────────────────────────────────────────────────
+    const canvas = document.getElementById('c');
+    const ctx = canvas.getContext('2d');
+    let W, H;
+
+    function resize() {
+      W = canvas.width  = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    function newStreak(scatter) {
+      const len = 15 + Math.random() * 35;
+      return {
+        x:     Math.random() * (W + 60) - 30,
+        y:     scatter ? Math.random() * H : -len,
+        len,
+        speed: 6 + Math.random() * 10,
+        alpha: 0.03 + Math.random() * 0.1,
+        width: 0.4 + Math.random() * 0.7,
+      };
+    }
+
+    const streaks = Array.from({ length: 140 }, () => newStreak(true));
+
+    function animateRain() {
+      ctx.clearRect(0, 0, W, H);
+      streaks.forEach(s => {
+        ctx.save();
+        ctx.globalAlpha = s.alpha;
+        ctx.strokeStyle = 'rgba(220,190,140,1)';
+        ctx.lineWidth = s.width;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(s.x, s.y);
+        ctx.lineTo(s.x - s.len * 0.12, s.y + s.len);
+        ctx.stroke();
+        ctx.restore();
+        s.y += s.speed;
+        s.x -= s.speed * 0.12;
+        if (s.y - s.len > H || s.x < -60) Object.assign(s, newStreak(false));
+      });
+      requestAnimationFrame(animateRain);
+    }
+    animateRain();
+
+    // ── players ───────────────────────────────────────────────
+    function fmt(s) {
+      if (!isFinite(s)) return '—';
+      return `${Math.floor(s / 60)}:${Math.floor(s % 60).toString().padStart(2, '0')}`;
+    }
+
+    // shared open state
+    let popupOpen  = false;
+    let popupOpen2 = false;
+    let popupOpen3 = false;
+    let popupOpen4 = false;
+    let popupOpen5 = false;
+
+    // elements – player 1
+    const audio     = document.getElementById('trackAudio');
+    const popup     = document.getElementById('playerPopup');
+    const avatarMid = document.getElementById('avatarMid');
+    const playBtn   = document.getElementById('playPauseBtn');
+    const iconPlay  = document.getElementById('iconPlay');
+    const iconPause = document.getElementById('iconPause');
+    const fill      = document.getElementById('progressFill');
+    const timeCur   = document.getElementById('timeCurrent');
+    const timeDur   = document.getElementById('timeDuration');
+    const volSlider = document.getElementById('volSlider');
+    const progTrack = document.getElementById('progressTrack');
+    audio.volume = 0.8;
+
+    // elements – player 2
+    const audio2     = document.getElementById('trackAudio2');
+    const popup2     = document.getElementById('playerPopup2');
+    const avatarKino = document.getElementById('avatarKino');
+    const playBtn2   = document.getElementById('playPauseBtn2');
+    const iconPlay2  = document.getElementById('iconPlay2');
+    const iconPause2 = document.getElementById('iconPause2');
+    const fill2      = document.getElementById('progressFill2');
+    const timeCur2   = document.getElementById('timeCurrent2');
+    const timeDur2   = document.getElementById('timeDuration2');
+    const volSlider2 = document.getElementById('volSlider2');
+    const progTrack2 = document.getElementById('progressTrack2');
+    audio2.volume = 0.8;
+
+    // elements – player 3
+    const audio3     = document.getElementById('trackAudio3');
+    const popup3     = document.getElementById('playerPopup3');
+    const avatarSkai = document.getElementById('avatarSkai');
+    const playBtn3   = document.getElementById('playPauseBtn3');
+    const iconPlay3  = document.getElementById('iconPlay3');
+    const iconPause3 = document.getElementById('iconPause3');
+    const fill3      = document.getElementById('progressFill3');
+    const timeCur3   = document.getElementById('timeCurrent3');
+    const timeDur3   = document.getElementById('timeDuration3');
+    const volSlider3 = document.getElementById('volSlider3');
+    const progTrack3 = document.getElementById('progressTrack3');
+    audio3.volume = 0.8;
+
+    // elements – player 4
+    const audio4         = document.getElementById('trackAudio4');
+    const popup4         = document.getElementById('playerPopup4');
+    const avatarPachelbel = document.getElementById('avatarPachelbel');
+    const playBtn4       = document.getElementById('playPauseBtn4');
+    const iconPlay4      = document.getElementById('iconPlay4');
+    const iconPause4     = document.getElementById('iconPause4');
+    const fill4          = document.getElementById('progressFill4');
+    const timeCur4       = document.getElementById('timeCurrent4');
+    const timeDur4       = document.getElementById('timeDuration4');
+    const volSlider4     = document.getElementById('volSlider4');
+    const progTrack4     = document.getElementById('progressTrack4');
+    audio4.volume = 0.8;
+
+    // elements – player 5
+    const audio5      = document.getElementById('trackAudio5');
+    const popup5      = document.getElementById('playerPopup5');
+    const avatarUnki  = document.getElementById('avatarUnki');
+    const playBtn5    = document.getElementById('playPauseBtn5');
+    const iconPlay5   = document.getElementById('iconPlay5');
+    const iconPause5  = document.getElementById('iconPause5');
+    const fill5       = document.getElementById('progressFill5');
+    const timeCur5    = document.getElementById('timeCurrent5');
+    const timeDur5    = document.getElementById('timeDuration5');
+    const volSlider5  = document.getElementById('volSlider5');
+    const progTrack5  = document.getElementById('progressTrack5');
+    audio5.volume = 0.8;
+
+    // ── close helpers (defined first so open can call them) ───
+    function closePopup() {
+      popup.classList.remove('visible');
+      setTimeout(() => popup.classList.add('hidden'), 300);
+      popupOpen = false;
+    }
+
+    function closePopup2() {
+      popup2.classList.remove('visible');
+      setTimeout(() => popup2.classList.add('hidden'), 300);
+      popupOpen2 = false;
+    }
+
+    function closePopup3() {
+      popup3.classList.remove('visible');
+      setTimeout(() => popup3.classList.add('hidden'), 300);
+      popupOpen3 = false;
+    }
+
+    function closePopup4() {
+      popup4.classList.remove('visible');
+      setTimeout(() => popup4.classList.add('hidden'), 300);
+      popupOpen4 = false;
+    }
+
+    function closePopup5() {
+      popup5.classList.remove('visible');
+      setTimeout(() => popup5.classList.add('hidden'), 300);
+      popupOpen5 = false;
+    }
+
+    // ── position helpers ──────────────────────────────────────
+    function positionPopup() {
+      const rect = avatarMid.getBoundingClientRect();
+      const pw = popup.offsetWidth || 260;
+      let left = rect.left + rect.width / 2 - pw / 2;
+      left = Math.max(8, Math.min(left, window.innerWidth - pw - 8));
+      const ph = popup.offsetHeight || 180;
+      popup.style.top  = (rect.top > ph + 16 ? rect.top - ph - 12 : rect.bottom + 12) + 'px';
+      popup.style.left = left + 'px';
+    }
+
+    function positionPopup2() {
+      const rect = avatarKino.getBoundingClientRect();
+      const pw = popup2.offsetWidth || 260;
+      let left = rect.left + rect.width / 2 - pw / 2;
+      left = Math.max(8, Math.min(left, window.innerWidth - pw - 8));
+      const ph = popup2.offsetHeight || 180;
+      popup2.style.top  = (rect.top > ph + 16 ? rect.top - ph - 12 : rect.bottom + 12) + 'px';
+      popup2.style.left = left + 'px';
+    }
+
+    function positionPopup3() {
+      const rect = avatarSkai.getBoundingClientRect();
+      const pw = popup3.offsetWidth || 260;
+      let left = rect.left + rect.width / 2 - pw / 2;
+      left = Math.max(8, Math.min(left, window.innerWidth - pw - 8));
+      const ph = popup3.offsetHeight || 180;
+      popup3.style.top  = (rect.top > ph + 16 ? rect.top - ph - 12 : rect.bottom + 12) + 'px';
+      popup3.style.left = left + 'px';
+    }
+
+    function positionPopup4() {
+      const rect = avatarPachelbel.getBoundingClientRect();
+      const pw = popup4.offsetWidth || 260;
+      let left = rect.left + rect.width / 2 - pw / 2;
+      left = Math.max(8, Math.min(left, window.innerWidth - pw - 8));
+      const ph = popup4.offsetHeight || 180;
+      popup4.style.top  = (rect.top > ph + 16 ? rect.top - ph - 12 : rect.bottom + 12) + 'px';
+      popup4.style.left = left + 'px';
+    }
+
+    function positionPopup5() {
+      const rect = avatarUnki.getBoundingClientRect();
+      const pw = popup5.offsetWidth || 260;
+      let left = rect.left + rect.width / 2 - pw / 2;
+      left = Math.max(8, Math.min(left, window.innerWidth - pw - 8));
+      const ph = popup5.offsetHeight || 180;
+      popup5.style.top  = (rect.top > ph + 16 ? rect.top - ph - 12 : rect.bottom + 12) + 'px';
+      popup5.style.left = left + 'px';
+    }
+
+    // ── open helpers ──────────────────────────────────────────
+    function openPopup() {
+      if (popupOpen2) closePopup2();
+      if (popupOpen3) closePopup3();
+      if (popupOpen4) closePopup4();
+      if (popupOpen5) closePopup5();
+      popup.classList.remove('hidden'); popup.getBoundingClientRect();
+      positionPopup(); popup.classList.add('visible'); popupOpen = true;
+    }
+    function openPopup2() {
+      if (popupOpen) closePopup();
+      if (popupOpen3) closePopup3();
+      if (popupOpen4) closePopup4();
+      if (popupOpen5) closePopup5();
+      popup2.classList.remove('hidden'); popup2.getBoundingClientRect();
+      positionPopup2(); popup2.classList.add('visible'); popupOpen2 = true;
+    }
+    function openPopup3() {
+      if (popupOpen) closePopup();
+      if (popupOpen2) closePopup2();
+      if (popupOpen4) closePopup4();
+      if (popupOpen5) closePopup5();
+      popup3.classList.remove('hidden'); popup3.getBoundingClientRect();
+      positionPopup3(); popup3.classList.add('visible'); popupOpen3 = true;
+    }
+    function openPopup4() {
+      if (popupOpen) closePopup();
+      if (popupOpen2) closePopup2();
+      if (popupOpen3) closePopup3();
+      if (popupOpen5) closePopup5();
+      popup4.classList.remove('hidden'); popup4.getBoundingClientRect();
+      positionPopup4(); popup4.classList.add('visible'); popupOpen4 = true;
+    }
+    function openPopup5() {
+      if (popupOpen) closePopup();
+      if (popupOpen2) closePopup2();
+      if (popupOpen3) closePopup3();
+      if (popupOpen4) closePopup4();
+      popup5.classList.remove('hidden'); popup5.getBoundingClientRect();
+      positionPopup5(); popup5.classList.add('visible'); popupOpen5 = true;
+    }
+
+    // ── click handlers ────────────────────────────────────────
+    avatarMid.addEventListener('click', e => {
+      e.stopPropagation();
+      popupOpen ? closePopup() : openPopup();
+    });
+
+    avatarKino.addEventListener('click', e => {
+      e.stopPropagation();
+      popupOpen2 ? closePopup2() : openPopup2();
+    });
+
+    avatarSkai.addEventListener('click', e => {
+      e.stopPropagation();
+      popupOpen3 ? closePopup3() : openPopup3();
+    });
+
+    avatarPachelbel.addEventListener('click', e => {
+      e.stopPropagation();
+      popupOpen4 ? closePopup4() : openPopup4();
+    });
+
+    avatarUnki.addEventListener('click', e => {
+      e.stopPropagation();
+      popupOpen5 ? closePopup5() : openPopup5();
+    });
+
+    document.addEventListener('click', e => {
+      if (popupOpen  && !popup.contains(e.target))  closePopup();
+      if (popupOpen2 && !popup2.contains(e.target)) closePopup2();
+      if (popupOpen3 && !popup3.contains(e.target)) closePopup3();
+      if (popupOpen4 && !popup4.contains(e.target)) closePopup4();
+      if (popupOpen5 && !popup5.contains(e.target)) closePopup5();
+    });
+
+    popup.addEventListener('click',  e => e.stopPropagation());
+    popup2.addEventListener('click', e => e.stopPropagation());
+    popup3.addEventListener('click', e => e.stopPropagation());
+    popup4.addEventListener('click', e => e.stopPropagation());
+    popup5.addEventListener('click', e => e.stopPropagation());
+
+    // ── play / pause ──────────────────────────────────────────
+    playBtn.addEventListener('click', () => {
+      if (audio.paused) {
+        audio.play();
+        iconPlay.style.display  = 'none';
+        iconPause.style.display = 'block';
+      } else {
+        audio.pause();
+        iconPlay.style.display  = 'block';
+        iconPause.style.display = 'none';
+      }
+    });
+
+    playBtn2.addEventListener('click', () => {
+      if (audio2.paused) {
+        audio2.play();
+        iconPlay2.style.display  = 'none';
+        iconPause2.style.display = 'block';
+      } else {
+        audio2.pause();
+        iconPlay2.style.display  = 'block';
+        iconPause2.style.display = 'none';
+      }
+    });
+
+    // ── progress ──────────────────────────────────────────────
+    audio.addEventListener('timeupdate', () => {
+      if (!audio.duration) return;
+      fill.style.width    = (audio.currentTime / audio.duration * 100) + '%';
+      timeCur.textContent = fmt(audio.currentTime);
+    });
+    audio.addEventListener('loadedmetadata', () => { timeDur.textContent = fmt(audio.duration); });
+
+    audio2.addEventListener('timeupdate', () => {
+      if (!audio2.duration) return;
+      fill2.style.width    = (audio2.currentTime / audio2.duration * 100) + '%';
+      timeCur2.textContent = fmt(audio2.currentTime);
+    });
+    audio2.addEventListener('loadedmetadata', () => { timeDur2.textContent = fmt(audio2.duration); });
+
+    // ── scrub ─────────────────────────────────────────────────
+    progTrack.addEventListener('click', e => {
+      const r = progTrack.getBoundingClientRect();
+      audio.currentTime = ((e.clientX - r.left) / r.width) * audio.duration;
+    });
+    progTrack2.addEventListener('click', e => {
+      const r = progTrack2.getBoundingClientRect();
+      audio2.currentTime = ((e.clientX - r.left) / r.width) * audio2.duration;
+    });
+
+    // ── volume ────────────────────────────────────────────────
+    volSlider.addEventListener('input',  () => { audio.volume  = parseFloat(volSlider.value); });
+    volSlider2.addEventListener('input', () => { audio2.volume = parseFloat(volSlider2.value); });
+    volSlider3.addEventListener('input', () => { audio3.volume = parseFloat(volSlider3.value); });
+    volSlider4.addEventListener('input', () => { audio4.volume = parseFloat(volSlider4.value); });
+    volSlider5.addEventListener('input', () => { audio5.volume = parseFloat(volSlider5.value); });
+
+    playBtn3.addEventListener('click', () => {
+      if (audio3.paused) { audio3.play(); iconPlay3.style.display='none'; iconPause3.style.display='block'; }
+      else { audio3.pause(); iconPlay3.style.display='block'; iconPause3.style.display='none'; }
+    });
+    playBtn4.addEventListener('click', () => {
+      if (audio4.paused) { audio4.play(); iconPlay4.style.display='none'; iconPause4.style.display='block'; }
+      else { audio4.pause(); iconPlay4.style.display='block'; iconPause4.style.display='none'; }
+    });
+    playBtn5.addEventListener('click', () => {
+      if (audio5.paused) { audio5.play(); iconPlay5.style.display='none'; iconPause5.style.display='block'; }
+      else { audio5.pause(); iconPlay5.style.display='block'; iconPause5.style.display='none'; }
+    });
+
+    audio3.addEventListener('timeupdate', () => {
+      if (!audio3.duration) return;
+      fill3.style.width    = (audio3.currentTime / audio3.duration * 100) + '%';
+      timeCur3.textContent = fmt(audio3.currentTime);
+    });
+    audio3.addEventListener('loadedmetadata', () => { timeDur3.textContent = fmt(audio3.duration); });
+
+    audio4.addEventListener('timeupdate', () => {
+      if (!audio4.duration) return;
+      fill4.style.width    = (audio4.currentTime / audio4.duration * 100) + '%';
+      timeCur4.textContent = fmt(audio4.currentTime);
+    });
+    audio4.addEventListener('loadedmetadata', () => { timeDur4.textContent = fmt(audio4.duration); });
+
+    audio5.addEventListener('timeupdate', () => {
+      if (!audio5.duration) return;
+      fill5.style.width    = (audio5.currentTime / audio5.duration * 100) + '%';
+      timeCur5.textContent = fmt(audio5.currentTime);
+    });
+    audio5.addEventListener('loadedmetadata', () => { timeDur5.textContent = fmt(audio5.duration); });
+
+    progTrack3.addEventListener('click', e => {
+      const r = progTrack3.getBoundingClientRect();
+      audio3.currentTime = ((e.clientX - r.left) / r.width) * audio3.duration;
+    });
+    progTrack4.addEventListener('click', e => {
+      const r = progTrack4.getBoundingClientRect();
+      audio4.currentTime = ((e.clientX - r.left) / r.width) * audio4.duration;
+    });
+    progTrack5.addEventListener('click', e => {
+      const r = progTrack5.getBoundingClientRect();
+      audio5.currentTime = ((e.clientX - r.left) / r.width) * audio5.duration;
+    });
+
+    window.addEventListener('resize', () => {
+      if (popupOpen)  positionPopup();
+      if (popupOpen2) positionPopup2();
+      if (popupOpen3) positionPopup3();
+      if (popupOpen4) positionPopup4();
+      if (popupOpen5) positionPopup5();
+    });
+  </script>
+</body>
+</html>
